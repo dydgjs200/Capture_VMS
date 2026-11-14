@@ -1,0 +1,47 @@
+[package]
+name = "capture-vms"
+version = "0.6.7"
+edition = "2021"
+description = "무선 환경 RTSP 수신 안정성 검증 (Capture VMS)"
+# 실행 파일이 둘(엔진 capture-vms, 뷰어 capture-vms-viewer)이라 이름 없이 `cargo run`하면 엔진을 띄운다
+default-run = "capture-vms"
+
+[dependencies]
+anyhow = "1"
+axum = "0.8"
+base64 = "0.22"
+# 뷰어(capture-vms-viewer.exe)의 창·그리기
+eframe = { version = "0.29", default-features = false, features = ["glow", "default_fonts"] }
+bytes = "1"
+chrono = { version = "0.4", features = ["serde"] }
+futures-util = "0.3"
+open = "5"
+rust_xlsxwriter = "0.102"
+reqwest = { version = "0.12", default-features = false, features = ["native-tls"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha1 = "0.10"
+tokio = { version = "1", features = ["full"] }
+toml = "0.8"
+toml_edit = "0.22"
+tracing = "0.1"
+tracing-appender = "0.2"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.59", features = [
+    "Win32_Foundation",
+    "Win32_NetworkManagement_IpHelper",
+    "Win32_NetworkManagement_Ndis",
+    "Win32_Networking_WinSock",
+    "Win32_Storage_FileSystem",
+    "Win32_System_SystemInformation",
+    "Win32_System_Threading",
+    "Win32_UI_WindowsAndMessaging",
+] }
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true

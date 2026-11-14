@@ -1,0 +1,11 @@
+/target
+/data
+/dist
+/ffmpeg
+
+# 카메라 계정(비밀번호)이 평문으로 들어 있다 → config.example.toml을 복사해서 쓴다
+/config.toml
+/viewer.toml
+
+*.tmp
+*.log
