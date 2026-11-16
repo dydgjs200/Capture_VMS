@@ -12,6 +12,7 @@ mod export;
 mod netmon;
 mod netscan;
 mod onvif;
+mod shellopen;
 mod stalldiag;
 mod store;
 mod stream;

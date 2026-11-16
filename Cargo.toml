@@ -1,6 +1,6 @@
 [package]
 name = "capture-vms"
-version = "0.6.7"
+version = "0.6.8"
 edition = "2021"
 description = "무선 환경 RTSP 수신 안정성 검증 (Capture VMS)"
 # 실행 파일이 둘(엔진 capture-vms, 뷰어 capture-vms-viewer)이라 이름 없이 `cargo run`하면 엔진을 띄운다

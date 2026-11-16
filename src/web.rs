@@ -22,7 +22,7 @@ use crate::{
     app::{App, CamStatus},
     camfix,
     config::{self, CameraConfig, TriggerConfig},
-    export, netmon, netscan, onvif,
+    export, netmon, netscan, onvif, shellopen,
     store::{self, CaptureRecord, DirStats, Event, NetPoint, StreamPoint, TriggerRecord, WifiInfo, WifiPoint},
     stream::{self, LiveBrief, SessionView, StartRequest},
     trigger,
@@ -1443,8 +1443,8 @@ async fn open_path(State(app): State<AppState>, Json(req): Json<OpenRequest>) ->
             // 이미지가 있는 폴더를 열고 그 파일을 선택해 둔다
             let img = req.id.as_deref().and_then(|id| app.store.capture(id)).and_then(|c| c.image);
             return match img {
-                Some(p) if FsPath::new(&p).exists() => match std::process::Command::new("explorer").arg(format!("/select,{p}")).spawn() {
-                    Ok(_) => Json(json!({ "ok": true })).into_response(),
+                Some(p) if FsPath::new(&p).exists() => match shellopen::select(FsPath::new(&p)) {
+                    Ok(_) => Json(json!({ "ok": true, "path": p })).into_response(),
                     Err(e) => api_error(StatusCode::INTERNAL_SERVER_ERROR, format!("열 수 없습니다: {e}")),
                 },
                 _ => api_error(StatusCode::NOT_FOUND, "이미지 파일이 없습니다"),
@@ -1466,8 +1466,13 @@ async fn open_path(State(app): State<AppState>, Json(req): Json<OpenRequest>) ->
         }
         _ => return api_error(StatusCode::BAD_REQUEST, "which는 recordings | logs | config | session | capture | exports | export 중 하나입니다"),
     };
-    match std::process::Command::new("explorer").arg(&target).spawn() {
-        Ok(_) => Json(json!({ "ok": true })).into_response(),
+    // 없는 폴더를 넘기면 탐색기는 말없이 '문서'를 연다 → 여기서 알려 준다
+    if !target.exists() {
+        return api_error(StatusCode::NOT_FOUND, format!("폴더가 없습니다: {}", target.display()));
+    }
+    let opened = if target.is_file() { shellopen::file(&target) } else { shellopen::folder(&target) };
+    match opened {
+        Ok(_) => Json(json!({ "ok": true, "path": target.display().to_string() })).into_response(),
         Err(e) => api_error(StatusCode::INTERNAL_SERVER_ERROR, format!("열 수 없습니다: {e}")),
     }
 }
