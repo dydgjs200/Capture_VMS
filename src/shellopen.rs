@@ -3,7 +3,7 @@
 //! 두 가지를 챙긴다.
 //! 1. `explorer /select,경로`는 탐색기가 명령줄을 스스로 풀기 때문에 **경로만** 따옴표로 감싸야 한다. 인자 전체를
 //!    감싸면(`"/select,C:\Program Files\a.jpg"` — 경로에 공백이 있을 때 Rust가 자동으로 그렇게 한다) 탐색기가
-//!    알아듣지 못하고 '문서' 폴더를 연다. 설치 폴더 이름(`POC Capture`)에 공백이 있어 설치된 PC에서는 늘 그랬다.
+//!    알아듣지 못하고 '문서' 폴더를 연다. 설치 폴더 이름(`Capture VMS`)에 공백이 있어 설치된 PC에서는 늘 그랬다.
 //! 2. 버튼을 누른 곳은 브라우저인데 탐색기를 띄우는 것은 창 없는 엔진이다. Windows는 지금 쓰고 있지 않은 프로그램이
 //!    띄운 창을 앞으로 내주지 않아서(작업 표시줄만 깜빡임) 폴더 창이 브라우저 뒤에 열린다 → 새로 뜬 폴더 창을
 //!    찾아 맨 위로 올린다.
@@ -158,8 +158,8 @@ mod tests {
 
     #[test]
     fn select_quotes_only_the_path() {
-        let p = Path::new(r"C:\Users\mks\AppData\Local\Programs\POC Capture\data\recordings\20261114\captures\a_메인.jpg");
-        assert_eq!(select_arg(p), r#"/select,"C:\Users\mks\AppData\Local\Programs\POC Capture\data\recordings\20261114\captures\a_메인.jpg""#);
+        let p = Path::new(r"C:\Users\user\AppData\Local\Programs\Capture VMS\data\recordings\20261114\captures\a_메인.jpg");
+        assert_eq!(select_arg(p), r#"/select,"C:\Users\user\AppData\Local\Programs\Capture VMS\data\recordings\20261114\captures\a_메인.jpg""#);
         // 인자 전체를 감싼 꼴(탐색기가 '문서'를 여는 꼴)이 아니어야 한다
         assert!(!select_arg(p).starts_with('"'));
     }
